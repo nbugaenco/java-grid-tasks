@@ -1,5 +1,8 @@
 package com.nbugaenco.encryptdecrypt;
 
+/**
+ * Base class for all encoders in this program
+ */
 public abstract class Encoder {
 
     protected String prompt;

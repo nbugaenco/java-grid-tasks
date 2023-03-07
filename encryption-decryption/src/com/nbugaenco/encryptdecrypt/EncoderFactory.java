@@ -1,5 +1,8 @@
 package com.nbugaenco.encryptdecrypt;
 
+/**
+ * This factory creates {@link Encoder} based on {@link Parameter#ALG}
+ */
 public class EncoderFactory {
 
     public Encoder create(String alg) {
