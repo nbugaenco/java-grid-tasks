@@ -2,20 +2,43 @@ package com.nbugaenco.searchengine;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
+
+    public static final String MENU = """
+                                
+                === Menu ===
+                1. Find a person
+                2. Print all people
+                0. Exit
+                """;
+
     public static void main(String[] args) {
         List<String> lines = readLines(args);
+        Map<String, Set<Integer>> invertedIndexes = invertIndexes(lines);
 
         byte choice;
         do {
             choice = askUser();
-            processChoice(lines, choice);
+            processChoice(lines, invertedIndexes, choice);
         } while (choice != 0);
+    }
+
+    public static Map<String, Set<Integer>> invertIndexes(List<String> lines) {
+        Map<String, Set<Integer>> indexes = new HashMap<>();
+
+        for (int i = 0; i < lines.size(); i++) {
+            String line = lines.get(i);
+            String[] tokens = line.split("\\s+");
+
+            for (String token : tokens) {
+                indexes.putIfAbsent(token.toLowerCase(), new HashSet<>());
+                indexes.get(token.toLowerCase()).add(i);
+            }
+        }
+
+        return indexes;
     }
 
     public static List<String> readLines(String[] args) {
@@ -38,19 +61,19 @@ public class Main {
     }
 
     public static byte askUser() {
-        System.out.println(getMenu());
+        System.out.println(MENU);
         System.out.print("Enter your choice: ");
         return new Scanner(System.in).nextByte();
     }
 
-    public static void processChoice(List<String> lines, byte choice) {
+    public static void processChoice(List<String> lines, Map<String, Set<Integer>> invertedIndexes, byte choice) {
         Scanner scanner = new Scanner(System.in);
 
         switch (choice) {
             case 1 -> {
-                System.out.println("\nEnter a name or email to search all suitable people.");
+                System.out.println("\nEnter a name or email to search all suitable people:");
                 String searchQuery = scanner.nextLine();
-                System.out.println(findAPerson(lines, searchQuery));
+                System.out.println(findPersons(lines, invertedIndexes, searchQuery));
             }
             case 2 -> {
                 System.out.println("\n=== List of people ===");
@@ -61,25 +84,19 @@ public class Main {
         }
     }
 
-    public static String findAPerson(List<String> lines, String searchQuery) {
-        List<String> tmp = lines.stream()
-                .filter(l -> l.toLowerCase().contains(searchQuery.toLowerCase()))
-                .toList();
+    public static String findPersons(List<String> lines, Map<String, Set<Integer>> invertedIndexes, String searchQuery) {
+        Set<Integer> indexes = invertedIndexes.get(searchQuery.toLowerCase());
 
-        StringBuilder result = new StringBuilder((tmp.size() > 0) ? "\nFound people:\n" : "\nNo matching people found.");
+        if (indexes == null) {
+            return "\nNo matching people found.";
+        }
 
-        tmp.forEach(s -> result.append(s).append("\n"));
+        StringBuilder stringBuilder = new StringBuilder("\n=== Found people ===\n");
 
-        return result.toString();
-    }
+        for (Integer index : indexes) {
+            stringBuilder.append(lines.get(index)).append("\n");
+        }
 
-    public static String getMenu() {
-        return """
-                                
-                === Menu ===
-                1. Find a person
-                2. Print all people
-                0. Exit
-                """;
+        return stringBuilder.toString();
     }
 }
