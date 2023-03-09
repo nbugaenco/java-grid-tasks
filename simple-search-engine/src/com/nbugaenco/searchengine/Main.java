@@ -1,33 +1,46 @@
 package com.nbugaenco.searchengine;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.print("Enter the number of people: ");
-        int linesCount = scanner.nextInt();
-        scanner.nextLine();
-
-        List<String> lines = new ArrayList<>(linesCount);
-
-        System.out.println("Enter all people:");
-        for (int i = 0; i < linesCount; ++i) {
-            lines.add(scanner.nextLine());
-        }
+        List<String> lines = readLines(args);
 
         byte choice;
         do {
-            System.out.println(getMenu());
-            System.out.print("Enter your choice: ");
-            choice = scanner.nextByte();
-            scanner.nextLine();
-
+            choice = askUser();
             processChoice(lines, choice);
         } while (choice != 0);
+    }
+
+    public static List<String> readLines(String[] args) {
+        List<String> lines = new ArrayList<>();
+
+        if (Objects.requireNonNull(args)[0].equals("--data") && args[1] != null) {
+            try (Scanner fileScanner = new Scanner(new File(args[1]))) {
+                while (fileScanner.hasNextLine()) {
+                    lines.add(fileScanner.nextLine());
+                }
+            } catch (FileNotFoundException e) {
+                System.out.println("File not found: " + args[1]);
+                System.exit(0);
+            }
+
+            return lines;
+        }
+
+        throw new IllegalArgumentException("Invalid argument: " + args[0]);
+    }
+
+    public static byte askUser() {
+        System.out.println(getMenu());
+        System.out.print("Enter your choice: ");
+        return new Scanner(System.in).nextByte();
     }
 
     public static void processChoice(List<String> lines, byte choice) {
@@ -53,7 +66,7 @@ public class Main {
                 .filter(l -> l.toLowerCase().contains(searchQuery.toLowerCase()))
                 .toList();
 
-        StringBuilder result = new StringBuilder((tmp.size() > 0) ? "\n=== Found people ===\n" : "\nNo matching people found.");
+        StringBuilder result = new StringBuilder((tmp.size() > 0) ? "\nFound people:\n" : "\nNo matching people found.");
 
         tmp.forEach(s -> result.append(s).append("\n"));
 
@@ -62,7 +75,7 @@ public class Main {
 
     public static String getMenu() {
         return """
-                
+                                
                 === Menu ===
                 1. Find a person
                 2. Print all people
