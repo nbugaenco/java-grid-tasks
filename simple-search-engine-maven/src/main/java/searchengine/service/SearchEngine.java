@@ -7,10 +7,16 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Basic interface for SearcEngine strategies
+ * Basic abstract class for SearcEngine strategies
  */
-public interface SearchEngine {
-    String search(SearchDataset dataset, String searchQuery);
+public abstract class SearchEngine {
+    protected final SearchDataset dataset;
+
+    protected SearchEngine(SearchDataset dataset) {
+        this.dataset = dataset;
+    }
+
+    public abstract String search(String searchQuery);
 
     /**
      * This method splits search query into words
@@ -18,7 +24,7 @@ public interface SearchEngine {
      * @param searchQuery the search query
      * @return a list of words
      */
-    default List<String> splitSearchQuery(String searchQuery) {
+    protected List<String> splitSearchQuery(String searchQuery) {
         return Arrays.stream(searchQuery.split("\\s+"))
                 .map(String::toLowerCase)
                 .toList();
@@ -31,7 +37,7 @@ public interface SearchEngine {
      * @param indexes Lines indexes that satisfy the search query
      * @return result of search query process
      */
-    default String buildResult(SearchDataset dataset, Set<Integer> indexes) {
+    protected String buildResult(SearchDataset dataset, Set<Integer> indexes) {
         if (indexes.isEmpty()) {
             return "\nNo matching people found.";
         }

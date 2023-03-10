@@ -10,9 +10,14 @@ import java.util.Set;
 /**
  * Implementation of {@link SearchEngine} that searches lines that do NOT contain any words from search query
  */
-public class SearchEngineNone implements SearchEngine {
+public class SearchEngineNone extends SearchEngine {
+
+    public SearchEngineNone(SearchDataset dataset) {
+        super(dataset);
+    }
+
     @Override
-    public String search(SearchDataset dataset, String searchQuery) {
+    public String search(String searchQuery) {
         List<String> words = splitSearchQuery(searchQuery);
         Set<Integer> indexes = new HashSet<>(dataset.getLines().size());
 

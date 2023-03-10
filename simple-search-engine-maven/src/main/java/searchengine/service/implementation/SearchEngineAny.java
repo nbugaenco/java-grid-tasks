@@ -10,10 +10,14 @@ import java.util.Set;
 /**
  * Implementation of {@link SearchEngine} that searches lines that contain at least one word from search query
  */
-public class SearchEngineAny implements SearchEngine {
+public class SearchEngineAny extends SearchEngine {
+
+    public SearchEngineAny(SearchDataset dataset) {
+        super(dataset);
+    }
 
     @Override
-    public String search(SearchDataset dataset, String searchQuery) {
+    public String search(String searchQuery) {
         List<String> words = splitSearchQuery(searchQuery);
         Set<Integer> indexes = new HashSet<>(words.size());
 
