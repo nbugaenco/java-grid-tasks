@@ -1,4 +1,8 @@
-package com.nbugaenco.searchengine;
+package searchengine.util;
+
+import searchengine.model.SearchEngineContext;
+import searchengine.model.SearchStrategy;
+import searchengine.model.SearchDataset;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -111,7 +115,7 @@ public class SearchEngineUtils {
         System.out.println("\nEnter a name or email to search all suitable people:");
         String searchQuery = scanner.nextLine();
 
-        SearchEngine searchEngine = new SearchEngine(searchMethod);
-        System.out.println(searchEngine.search(dataset, searchQuery));
+        SearchEngineContext searchEngineContext = new SearchEngineContext(searchMethod);
+        System.out.println(searchEngineContext.search(dataset, searchQuery));
     }
 }

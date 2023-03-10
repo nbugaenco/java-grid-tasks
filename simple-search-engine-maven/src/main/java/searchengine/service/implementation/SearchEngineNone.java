@@ -1,13 +1,16 @@
-package com.nbugaenco.searchengine;
+package searchengine.service.implementation;
+
+import searchengine.model.SearchDataset;
+import searchengine.service.SearchEngine;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 /**
- * Implementation of {@link SearchEngineStrategy} that searches lines that do NOT contain any words from search query
+ * Implementation of {@link SearchEngine} that searches lines that do NOT contain any words from search query
  */
-public class SearchEngineNone implements SearchEngineStrategy {
+public class SearchEngineNone implements SearchEngine {
     @Override
     public String search(SearchDataset dataset, String searchQuery) {
         List<String> words = splitSearchQuery(searchQuery);

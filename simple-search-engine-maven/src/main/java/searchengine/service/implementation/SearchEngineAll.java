@@ -1,4 +1,7 @@
-package com.nbugaenco.searchengine;
+package searchengine.service.implementation;
+
+import searchengine.model.SearchDataset;
+import searchengine.service.SearchEngine;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -6,9 +9,9 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Implementation of {@link SearchEngineStrategy} that searches lines that contain all words from search query
+ * Implementation of {@link SearchEngine} that searches lines that contain all words from search query
  */
-public class SearchEngineAll implements SearchEngineStrategy {
+public class SearchEngineAll implements SearchEngine {
 
     @Override
     public String search(SearchDataset dataset, String searchQuery) {

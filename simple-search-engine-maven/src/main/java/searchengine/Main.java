@@ -1,4 +1,7 @@
-package com.nbugaenco.searchengine;
+package searchengine;
+
+import searchengine.model.SearchDataset;
+import searchengine.util.SearchEngineUtils;
 
 public class Main {
 

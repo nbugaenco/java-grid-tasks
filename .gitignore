@@ -29,6 +29,8 @@ hs_err_pid*
 
 **/*.iml
 
+**/target
+
 # User-specific stuff
 .idea/**/workspace.xml
 .idea/**/tasks.xml

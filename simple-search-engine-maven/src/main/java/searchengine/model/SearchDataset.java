@@ -1,4 +1,7 @@
-package com.nbugaenco.searchengine;
+package searchengine.model;
+
+import lombok.Data;
+import searchengine.util.SearchEngineUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -7,6 +10,7 @@ import java.util.Set;
 /**
  * Class that stores data to search in and indexes for it
  */
+@Data
 public class SearchDataset {
     private List<String> lines;
     private Map<String, Set<Integer>> invertedIndexes;
@@ -14,23 +18,6 @@ public class SearchDataset {
     public SearchDataset(List<String> lines) {
         this.lines = lines;
         invertIndexes();
-    }
-
-    public List<String> getLines() {
-        return lines;
-    }
-
-    public void setLines(List<String> lines) {
-        this.lines = lines;
-        invertIndexes();
-    }
-
-    public Map<String, Set<Integer>> getInvertedIndexes() {
-        return invertedIndexes;
-    }
-
-    public void setInvertedIndexes(Map<String, Set<Integer>> invertedIndexes) {
-        this.invertedIndexes = invertedIndexes;
     }
 
     public void invertIndexes() {

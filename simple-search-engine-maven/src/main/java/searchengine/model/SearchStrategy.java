@@ -1,4 +1,4 @@
-package com.nbugaenco.searchengine;
+package searchengine.model;
 
 public enum SearchStrategy {
     ALL,

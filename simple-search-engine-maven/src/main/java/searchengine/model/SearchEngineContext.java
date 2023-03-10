@@ -1,17 +1,20 @@
-package com.nbugaenco.searchengine;
+package searchengine.model;
+
+import lombok.Data;
+import searchengine.service.SearchEngine;
+import searchengine.service.implementation.SearchEngineAll;
+import searchengine.service.implementation.SearchEngineAny;
+import searchengine.service.implementation.SearchEngineNone;
 
 /**
- * Context for {@link SearchEngineStrategy} implementations
+ * Context for {@link SearchEngine} implementations
  */
-public class SearchEngine {
-    private SearchEngineStrategy searchMethod;
-
-    public SearchEngine(SearchEngineStrategy searchMethod) {
-        this.searchMethod = searchMethod;
-    }
+@Data
+public class SearchEngineContext {
+    private SearchEngine searchMethod;
 
     // Factory for the poor
-    public SearchEngine(SearchStrategy strategy) {
+    public SearchEngineContext(SearchStrategy strategy) {
         if (strategy == SearchStrategy.ALL) {
             this.searchMethod = new SearchEngineAll();
         } else if (strategy == SearchStrategy.ANY) {
@@ -21,10 +24,6 @@ public class SearchEngine {
         } else {
             throw new IllegalArgumentException("Invalid search strategy");
         }
-    }
-
-    public void setSearchMethod(SearchEngineStrategy searchMethod) {
-        this.searchMethod = searchMethod;
     }
 
     public String search(SearchDataset dataset, String searchQuery) {

@@ -1,4 +1,6 @@
-package com.nbugaenco.searchengine;
+package searchengine.service;
+
+import searchengine.model.SearchDataset;
 
 import java.util.Arrays;
 import java.util.List;
@@ -7,7 +9,7 @@ import java.util.Set;
 /**
  * Basic interface for SearcEngine strategies
  */
-public interface SearchEngineStrategy {
+public interface SearchEngine {
     String search(SearchDataset dataset, String searchQuery);
 
     /**
