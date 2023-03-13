@@ -1,6 +1,7 @@
 package searchengine.service.implemetation;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import searchengine.model.SearchDataset;
@@ -12,15 +13,20 @@ import java.util.Set;
 
 class SearchEngineNoneTest {
 
-    SearchDataset dataset = new SearchDataset(new ArrayList<>() {
-        {
-            add("Kristofer Gray");
-            add("Fernando Marbury fernando_marbury@gmail.com");
-            add("Kristyn Nix nix-kris@gmail.com");
-            add("Regenia Enderle");
-            add("Kyle Gray");
-        }
-    });
+    SearchDataset dataset;
+
+    @BeforeEach
+    void setUp() {
+        dataset = new SearchDataset(new ArrayList<>() {
+            {
+                add("Kristofer Gray");
+                add("Fernando Marbury fernando_marbury@gmail.com");
+                add("Kristyn Nix nix-kris@gmail.com");
+                add("Regenia Enderle");
+                add("Kyle Gray");
+            }
+        });
+    }
 
     @Test
     @DisplayName("Search with NONE strategy")

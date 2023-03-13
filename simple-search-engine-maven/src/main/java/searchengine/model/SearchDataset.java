@@ -1,31 +1,32 @@
 package searchengine.model;
 
-import lombok.Getter;
-
 import java.util.*;
 
 /**
  * Class that stores data to search in and indexes for it
  */
-@Getter
 public class SearchDataset {
     private final Map<String, Set<Integer>> invertedIndexes;
     private final List<String> lines;
 
     public SearchDataset(List<String> lines) {
         this.lines = lines;
-        this.invertedIndexes = this.invertIndexes();
-    }
-
-    public void update(String... lines) {
-        this.lines.addAll(Arrays.asList(lines));
-
-        Map<String, Set<Integer>> newIndexes = this.invertIndexes();
-        this.invertedIndexes.putAll(newIndexes);
+        this.invertedIndexes = this.invertIndexes(this.getLines());
     }
 
     public Map<String, Set<Integer>> getInvertedIndexes() {
         return Collections.unmodifiableMap(invertedIndexes);
+    }
+
+    public List<String> getLines() {
+        return Collections.unmodifiableList(lines);
+    }
+
+    public void update(String... newLines) {
+        this.lines.addAll(Arrays.asList(newLines));
+
+        Map<String, Set<Integer>> newIndexes = this.invertIndexes(this.getLines());
+        this.invertedIndexes.putAll(newIndexes);
     }
 
     /**
@@ -33,11 +34,11 @@ public class SearchDataset {
      *
      * @return {@link Map} with all indexed data
      */
-    private Map<String, Set<Integer>> invertIndexes() {
+    private Map<String, Set<Integer>> invertIndexes(final List<String> input) {
         Map<String, Set<Integer>> indexes = new HashMap<>();
 
-        for (int i = 0; i < lines.size(); i++) {
-            String line = lines.get(i);
+        for (int i = 0; i < input.size(); i++) {
+            String line = input.get(i);
             String[] tokens = line.split("\\s+");
 
             for (String token : tokens) {

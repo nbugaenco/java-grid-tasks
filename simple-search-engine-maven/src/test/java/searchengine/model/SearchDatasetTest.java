@@ -1,6 +1,7 @@
 package searchengine.model;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -18,11 +19,16 @@ class SearchDatasetTest {
         }
     };
 
+    private SearchDataset dataset;
+
+    @BeforeEach
+    void setUp() {
+        dataset = new SearchDataset(lines);
+    }
+
     @Test
     @DisplayName("Create dataset and check if indexes exist")
     void checkIndexes() {
-        //when
-        SearchDataset dataset = new SearchDataset(lines);
 
         //then
         Assertions.assertTrue(dataset.getInvertedIndexes().containsKey("kristofer"));
@@ -33,7 +39,6 @@ class SearchDatasetTest {
     @DisplayName("Add new line and check if index is present")
     void makeUpdate() {
         //when
-        SearchDataset dataset = new SearchDataset(lines);
         dataset.update("new");
 
         //then
