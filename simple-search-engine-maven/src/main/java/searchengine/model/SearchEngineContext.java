@@ -1,23 +1,21 @@
 package searchengine.model;
 
 import lombok.Getter;
-import lombok.Setter;
 import searchengine.service.SearchEngine;
 import searchengine.service.implementation.SearchEngineAll;
 import searchengine.service.implementation.SearchEngineAny;
 import searchengine.service.implementation.SearchEngineNone;
 
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Context for {@link SearchEngine} implementations
  */
 @Getter
-@Setter
 public class SearchEngineContext {
+    private final SearchDataset dataset;
     private SearchEngine searchMethod;
-
-    private SearchDataset dataset;
 
     public SearchEngineContext(SearchDataset dataset) {
         this.dataset = dataset;
@@ -25,7 +23,9 @@ public class SearchEngineContext {
     }
 
     // Factory for the poor
-    public SearchEngineContext(SearchStrategy strategy, SearchDataset dataset) {
+    public SearchEngineContext(SearchDataset dataset, SearchStrategy strategy) {
+        this.dataset = dataset;
+
         if (strategy == SearchStrategy.ALL) {
             this.searchMethod = new SearchEngineAll(dataset);
         } else if (strategy == SearchStrategy.ANY) {
@@ -46,17 +46,42 @@ public class SearchEngineContext {
                 default -> throw new IllegalArgumentException("Invalid search strategy");
             }
         } else {
-            if (strategy == SearchStrategy.ALL && searchMethod.getClass() != SearchEngineAll.class) {
+            if (strategy == SearchStrategy.ALL && !(searchMethod instanceof SearchEngineAll)) {
                 this.searchMethod = new SearchEngineAll(dataset);
-            } else if (strategy == SearchStrategy.ANY && searchMethod.getClass() != SearchEngineAny.class) {
+            } else if (strategy == SearchStrategy.ANY && !(searchMethod instanceof SearchEngineAny)) {
                 this.searchMethod = new SearchEngineAny(dataset);
-            } else if (strategy == SearchStrategy.NONE && searchMethod.getClass() != SearchEngineNone.class) {
+            } else if (strategy == SearchStrategy.NONE && !(searchMethod instanceof SearchEngineNone)) {
                 this.searchMethod = new SearchEngineNone(dataset);
+            } else {
+                throw new IllegalArgumentException("Invalid search strategy");
             }
         }
     }
 
-    public String search(String searchQuery) {
+    public Set<Integer> search(String searchQuery) {
+        if (Objects.isNull(searchMethod)) {
+            throw new IllegalStateException("Search method is null");
+        }
         return this.searchMethod.search(searchQuery);
+    }
+
+    /**
+     * This method makes {@link String} with result of search query
+     *
+     * @param indexes Lines indexes that satisfy the search query
+     * @return result of search query process
+     */
+    public String buildResult(Set<Integer> indexes) {
+        if (indexes.isEmpty()) {
+            return "\nNo matching people found.";
+        }
+
+        StringBuilder stringBuilder = new StringBuilder("\n=== Found people ===\n");
+
+        for (Integer index : indexes) {
+            stringBuilder.append(dataset.getLines().get(index)).append("\n");
+        }
+
+        return stringBuilder.toString();
     }
 }

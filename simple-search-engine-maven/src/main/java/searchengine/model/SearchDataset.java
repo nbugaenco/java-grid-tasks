@@ -1,7 +1,6 @@
 package searchengine.model;
 
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.*;
 
@@ -9,19 +8,24 @@ import java.util.*;
  * Class that stores data to search in and indexes for it
  */
 @Getter
-@Setter
 public class SearchDataset {
-    private List<String> lines;
-    private Map<String, Set<Integer>> invertedIndexes;
+    private final Map<String, Set<Integer>> invertedIndexes;
+    private final List<String> lines;
 
     public SearchDataset(List<String> lines) {
         this.lines = lines;
         this.invertedIndexes = this.invertIndexes();
     }
 
-    public void setLines(List<String> lines) {
-        this.lines = lines;
-        this.invertedIndexes = this.invertIndexes();
+    public void update(String... lines) {
+        this.lines.addAll(Arrays.asList(lines));
+
+        Map<String, Set<Integer>> newIndexes = this.invertIndexes();
+        this.invertedIndexes.putAll(newIndexes);
+    }
+
+    public Map<String, Set<Integer>> getInvertedIndexes() {
+        return Collections.unmodifiableMap(invertedIndexes);
     }
 
     /**

@@ -44,7 +44,7 @@ public class SearchEngineUtils {
                 }
             } catch (FileNotFoundException e) {
                 System.out.println("File not found: " + args[1]);
-                System.exit(0);
+                System.exit(1);
             }
 
             return lines;
@@ -97,6 +97,6 @@ public class SearchEngineUtils {
         String searchQuery = scanner.nextLine();
 
         context.setSearchMethod(searchStrategy);
-        System.out.println(context.search(searchQuery));
+        System.out.println(context.buildResult(context.search(searchQuery)));
     }
 }

@@ -17,7 +17,7 @@ public class SearchEngineNone extends SearchEngine {
     }
 
     @Override
-    public String search(String searchQuery) {
+    public Set<Integer> search(String searchQuery) {
         List<String> words = splitSearchQuery(searchQuery);
         Set<Integer> indexes = new HashSet<>(dataset.getLines().size());
 
@@ -35,6 +35,6 @@ public class SearchEngineNone extends SearchEngine {
         // Subtracting  querySet from all indexes
         indexes.removeAll(querySet);
 
-        return buildResult(dataset, indexes);
+        return indexes;
     }
 }

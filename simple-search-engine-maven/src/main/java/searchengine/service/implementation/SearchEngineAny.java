@@ -17,7 +17,7 @@ public class SearchEngineAny extends SearchEngine {
     }
 
     @Override
-    public String search(String searchQuery) {
+    public Set<Integer> search(String searchQuery) {
         List<String> words = splitSearchQuery(searchQuery);
         Set<Integer> indexes = new HashSet<>(words.size());
 
@@ -26,6 +26,6 @@ public class SearchEngineAny extends SearchEngine {
             indexes.addAll(dataset.getInvertedIndexes().getOrDefault(word, new HashSet<>()));
         }
 
-        return buildResult(dataset, indexes);
+        return indexes;
     }
 }

@@ -17,14 +17,14 @@ public class SearchEngineAll extends SearchEngine {
     }
 
     @Override
-    public String search(String searchQuery) {
+    public Set<Integer> search(String searchQuery) {
         // Indexes of lines that contain at least one word from search query
         List<Set<Integer>> queryIndexes = splitSearchQuery(searchQuery).stream()
                 .map(word -> dataset.getInvertedIndexes().get(word.toLowerCase()))
                 .toList();
 
         if (queryIndexes.isEmpty() || queryIndexes.get(0) == null) {
-            return "\nNo matching people found.";
+            return Set.of();
         }
 
         Set<Integer> indexes = new HashSet<>(queryIndexes.get(0));
@@ -34,6 +34,6 @@ public class SearchEngineAll extends SearchEngine {
             indexes.retainAll(queryIndexes.get(i));
         }
 
-        return buildResult(dataset, indexes);
+        return indexes;
     }
 }
