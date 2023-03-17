@@ -2,15 +2,21 @@ package com.nbugaenco.blockchain;
 
 import com.nbugaenco.blockchain.model.Blockchain;
 
+import java.util.Scanner;
+
 public class Main {
+
     public static void main(String[] args) {
-        Blockchain blockchain = new Blockchain();
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter how many zeros the hash must start with: ");
+        int difficulty = scanner.nextInt();
+        scanner.close();
 
-        for (int i = 1; i <= 5; ++i) {
-            blockchain.createBlock();
-        }
+        Blockchain blockchain = new Blockchain(difficulty);
 
-        if (blockchain.verifyBlockchain()) {
+        blockchain.createBlocks(5);
+
+        if (blockchain.isBlockchainValid()) {
             System.out.println(blockchain);
         } else {
             System.out.println("Blockchain is not valid");
