@@ -8,11 +8,16 @@ public class Blockchain {
 
     private final List<Block> chain;
 
-    private final int difficulty;
+    private int difficulty;
 
     public Blockchain(int difficulty) {
         this.chain = new ArrayList<>();
         this.difficulty = Math.abs(difficulty);
+    }
+
+    public Blockchain(Blockchain blockchain) {
+        this.chain = new ArrayList<>(blockchain.getChain());
+        this.difficulty = Math.abs(blockchain.getDifficulty());
     }
 
     public void createBlock() {
@@ -20,12 +25,25 @@ public class Blockchain {
         Block newBlock = new Block(prevHash, chain.size() + 1L);
         newBlock.mineBlock(difficulty);
         chain.add(newBlock);
+
+        difficulty = adjustDifficulty();
     }
 
-    public void createBlocks(int count) {
-        for (int i = 0; i < count; i++) {
-            createBlock();
+    public List<Block> getChain() {
+        return chain;
+    }
+
+    public int getDifficulty() {
+        return difficulty;
+    }
+
+    private int adjustDifficulty() {
+        if (this.getLastBlock().getGenerationTime() > 60) {
+            return this.difficulty - 1;
+        } else if (this.getLastBlock().getGenerationTime() < 15) {
+            return this.difficulty + 1;
         }
+        return this.difficulty;
     }
 
     public boolean isBlockchainValid() {
@@ -36,27 +54,23 @@ public class Blockchain {
         return true;
     }
 
-    private boolean isBlockValid(Block block) {
-        return checkDifficulty(block) &&
-                checkOwnHash(block) &&
+    public boolean isBlockValid(Block block) {
+        return checkOwnHash(block) &&
                 checkPreviousHash(block);
     }
 
     private boolean checkPreviousHash(Block block) {
-        if (getPreviousBlock(block) == null) {
-            return block.getPreviousHash().equals("0");
-        }
+        Block prevBlock = getPreviousBlock(block);
 
-        return block.getPreviousHash().equals(getPreviousBlock(block).getHash());
+        if (prevBlock == null) {
+            return block.getPreviousHash().equals("0");
+        } else {
+            return block.getPreviousHash().equals(prevBlock.getHash());
+        }
     }
 
     private boolean checkOwnHash(Block block) {
         return block.getHash().equals(block.calculateHash());
-    }
-
-    private boolean checkDifficulty(Block block) {
-        String target = new String(new char[difficulty]).replace('\0', '0');
-        return block.getHash().substring(0, difficulty).equals(target);
     }
 
     private Block getPreviousBlock(Block block) {

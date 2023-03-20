@@ -2,10 +2,12 @@ package com.nbugaenco.blockchain.util;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class HashUtils {
+public class StringUtils {
 
-    private HashUtils() {
+    private StringUtils() {
         throw new IllegalStateException("Utility class");
     }
 
@@ -24,6 +26,17 @@ public class HashUtils {
             return hexString.toString();
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public static int getThreadNumber(String threadName) {
+        Pattern pattern = Pattern.compile("thread-(\\d+)");
+        Matcher matcher = pattern.matcher(threadName);
+
+        if (matcher.find()) {
+            return Integer.parseInt(matcher.group(1));
+        } else {
+            throw new IllegalArgumentException("Invalid thread name: " + threadName);
         }
     }
 }

@@ -1,25 +1,26 @@
 package com.nbugaenco.blockchain;
 
 import com.nbugaenco.blockchain.model.Blockchain;
+import com.nbugaenco.blockchain.service.MiningService;
 
-import java.util.Scanner;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter how many zeros the hash must start with: ");
-        int difficulty = scanner.nextInt();
-        scanner.close();
+        long start = new Date().getTime();
 
-        Blockchain blockchain = new Blockchain(difficulty);
+        MiningService miningService = new MiningService();
 
-        blockchain.createBlocks(5);
+        Blockchain blockchain = miningService.mineBlocks(new Blockchain(9), 15);
 
         if (blockchain.isBlockchainValid()) {
-            System.out.println(blockchain);
+            System.out.println("\nBlockchain is valid!");
         } else {
-            System.out.println("Blockchain is not valid");
+            System.out.println("\nBlockchain is invalid!");
         }
+
+        System.out.println("\nTime to execute: " + TimeUnit.MILLISECONDS.toSeconds(new Date().getTime() - start));
     }
 }
