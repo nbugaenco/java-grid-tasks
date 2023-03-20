@@ -1,5 +1,6 @@
 package com.nbugaenco.blockchain.service;
 
+import com.nbugaenco.blockchain.model.Block;
 import com.nbugaenco.blockchain.model.Blockchain;
 import com.nbugaenco.blockchain.model.Miner;
 
@@ -32,14 +33,14 @@ public class MiningService {
             }
 
             if (blockchain.isBlockchainValid()) {
-                System.out.println(blockchain.getLastBlock());
+                Block lastBlock = blockchain.getLastBlock();
 
                 if (oldDifficulty < blockchain.getDifficulty()) {
-                    System.out.println("N was increased to " + blockchain.getDifficulty());
+                    lastBlock.setDifficultyChange("N was increased to " + blockchain.getDifficulty());
                 } else if (oldDifficulty > blockchain.getDifficulty()) {
-                    System.out.println("N was decreased to " + blockchain.getDifficulty());
+                    lastBlock.setDifficultyChange("N was decreased to " + blockchain.getDifficulty());
                 } else {
-                    System.out.println("N stays the same");
+                    lastBlock.setDifficultyChange("N stays the same");
                 }
             }
         }

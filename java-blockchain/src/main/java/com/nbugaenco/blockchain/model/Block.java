@@ -2,56 +2,68 @@ package com.nbugaenco.blockchain.model;
 
 import com.nbugaenco.blockchain.util.StringUtils;
 
-import java.util.Date;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
+import java.time.Instant;
 
 public class Block {
 
     private final String previousHash;
-
     private final long timeStamp;
-
     private final long id;
     private String hash;
     private int nonce = 0;
     private long generationTime;
     private long miner;
+    private String difficultyChange;
 
-    public Block(String previousHash, long id) {
+    private Block(String previousHash, long id) {
         this.previousHash = previousHash;
         this.id = id;
-        this.timeStamp = new Date().getTime();
+        this.timeStamp = Instant.now().getEpochSecond();
         this.hash = calculateHash();
     }
 
-    public String getHash() {
-        return hash;
-    }
-
-    public String getPreviousHash() {
-        return previousHash;
+    public static Block create(String previousHash, long id) {
+        return new Block(previousHash, id);
     }
 
     public String calculateHash() {
         return StringUtils.applySha256(this.previousHash + this.id + this.timeStamp + this.nonce);
     }
 
-    public void mineBlock(int difficulty) {
-        String target = new String(new char[difficulty]).replace('\0', '0');
+    public String getHash() {
+        return hash;
+    }
 
-        while (!this.hash.substring(0, difficulty).equals(target) && !Thread.currentThread().isInterrupted()) {
-            this.nonce = ThreadLocalRandom.current().nextInt(Integer.MAX_VALUE);
-            this.hash = calculateHash();
-        }
+    public void setHash(String hash) {
+        this.hash = hash;
+    }
 
-        generationTime = TimeUnit.MILLISECONDS.toSeconds(new Date().getTime() - timeStamp);
+    public String getPreviousHash() {
+        return previousHash;
+    }
 
-        miner = StringUtils.getThreadNumber(Thread.currentThread().getName());
+    public void setNonce(int nonce) {
+        this.nonce = nonce;
+    }
+
+    public void setDifficultyChange(String difficultyChange) {
+        this.difficultyChange = difficultyChange;
+    }
+
+    public void setMiner(long miner) {
+        this.miner = miner;
+    }
+
+    public long calculateGenerationTime() {
+        return Instant.now().getEpochSecond() - timeStamp;
     }
 
     public long getGenerationTime() {
         return generationTime;
+    }
+
+    public void setGenerationTime(long generationTime) {
+        this.generationTime = generationTime;
     }
 
     @Override
@@ -63,6 +75,7 @@ public class Block {
                 "\nMagic number: " + this.nonce +
                 "\nHash of the previous block:\n" + this.previousHash +
                 "\nHash of the block:\n" + this.hash +
-                "\nBlock was generating for " + this.generationTime + " seconds";
+                "\nBlock was generating for " + this.generationTime + " seconds" +
+                "\n" + this.difficultyChange;
     }
 }

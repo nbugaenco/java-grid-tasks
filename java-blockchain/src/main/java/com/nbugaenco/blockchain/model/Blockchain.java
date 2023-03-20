@@ -1,43 +1,52 @@
 package com.nbugaenco.blockchain.model;
 
+import com.nbugaenco.blockchain.service.BlockMiner;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class Blockchain {
 
     private final List<Block> chain;
-
+    private final BlockMiner blockMiner;
     private int difficulty;
 
-    public Blockchain(int difficulty) {
+    private Blockchain(int difficulty) {
         this.chain = new ArrayList<>();
         this.difficulty = Math.abs(difficulty);
+        this.blockMiner = new BlockMiner();
     }
 
     public Blockchain(Blockchain blockchain) {
         this.chain = new ArrayList<>(blockchain.getChain());
         this.difficulty = Math.abs(blockchain.getDifficulty());
+        this.blockMiner = new BlockMiner();
     }
 
-    public void createBlock() {
+    public static Blockchain withDifficulty(int difficulty) {
+        return new Blockchain(difficulty);
+    }
+
+    public synchronized void createBlock() {
         String prevHash = chain.isEmpty() ? "0" : getLastBlock().getHash();
-        Block newBlock = new Block(prevHash, chain.size() + 1L);
-        newBlock.mineBlock(difficulty);
+        Block newBlock = Block.create(prevHash, chain.size() + 1L);
+        blockMiner.mineBlock(newBlock, difficulty);
         chain.add(newBlock);
 
         difficulty = adjustDifficulty();
     }
 
-    public List<Block> getChain() {
-        return chain;
+    public synchronized List<Block> getChain() {
+        return Collections.unmodifiableList(chain);
     }
 
     public int getDifficulty() {
         return difficulty;
     }
 
-    private int adjustDifficulty() {
+    private synchronized int adjustDifficulty() {
         if (this.getLastBlock().getGenerationTime() > 60) {
             return this.difficulty - 1;
         } else if (this.getLastBlock().getGenerationTime() < 15) {
@@ -46,7 +55,7 @@ public class Blockchain {
         return this.difficulty;
     }
 
-    public boolean isBlockchainValid() {
+    public synchronized boolean isBlockchainValid() {
         for (Block block : chain) {
             if (!isBlockValid(block)) return false;
         }
@@ -79,7 +88,7 @@ public class Blockchain {
         return (index == 0) ? null : chain.get(index - 1);
     }
 
-    public Block getLastBlock() {
+    public synchronized Block getLastBlock() {
         return chain.get(chain.size() - 1);
     }
 
