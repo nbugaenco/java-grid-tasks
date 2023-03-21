@@ -15,6 +15,17 @@ public class Block {
     private long miner;
     private String difficultyChange;
 
+    public Block(Block block) {
+        this.previousHash = block.previousHash;
+        this.id = block.id;
+        this.timeStamp = block.timeStamp;
+        this.hash = block.hash;
+        this.nonce = block.nonce;
+        this.generationTime = block.generationTime;
+        this.miner = block.miner;
+        this.difficultyChange = block.difficultyChange;
+    }
+
     private Block(String previousHash, long id) {
         this.previousHash = previousHash;
         this.id = id;

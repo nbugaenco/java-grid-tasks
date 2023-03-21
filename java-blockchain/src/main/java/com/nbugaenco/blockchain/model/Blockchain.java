@@ -1,6 +1,7 @@
 package com.nbugaenco.blockchain.model;
 
 import com.nbugaenco.blockchain.service.BlockMiner;
+import com.nbugaenco.blockchain.service.implementation.Sha256BlockMiner;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,13 +17,13 @@ public class Blockchain {
     private Blockchain(int difficulty) {
         this.chain = new ArrayList<>();
         this.difficulty = Math.abs(difficulty);
-        this.blockMiner = new BlockMiner();
+        this.blockMiner = new Sha256BlockMiner();
     }
 
     public Blockchain(Blockchain blockchain) {
         this.chain = new ArrayList<>(blockchain.getChain());
         this.difficulty = Math.abs(blockchain.getDifficulty());
-        this.blockMiner = new BlockMiner();
+        this.blockMiner = new Sha256BlockMiner();
     }
 
     public static Blockchain withDifficulty(int difficulty) {
@@ -31,9 +32,10 @@ public class Blockchain {
 
     public synchronized void createBlock() {
         String prevHash = chain.isEmpty() ? "0" : getLastBlock().getHash();
-        Block newBlock = Block.create(prevHash, chain.size() + 1L);
-        blockMiner.mineBlock(newBlock, difficulty);
-        chain.add(newBlock);
+
+        chain.add(blockMiner.mineBlock(
+                Block.create(prevHash, chain.size() + 1L),
+                difficulty));
 
         difficulty = adjustDifficulty();
     }

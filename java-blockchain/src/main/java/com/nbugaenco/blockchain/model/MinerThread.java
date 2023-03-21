@@ -2,11 +2,11 @@ package com.nbugaenco.blockchain.model;
 
 import java.util.concurrent.Callable;
 
-public class Miner implements Callable<Blockchain> {
+public class MinerThread implements Callable<Blockchain> {
 
     private final Blockchain blockchain;
 
-    public Miner(Blockchain blockchain) {
+    public MinerThread(Blockchain blockchain) {
         this.blockchain = new Blockchain(blockchain);
     }
 
