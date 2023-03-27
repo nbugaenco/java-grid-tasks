@@ -1,11 +1,13 @@
 package com.nbugaenco.blockchain.model;
 
+import com.nbugaenco.blockchain.exception.InvalidBlockException;
 import com.nbugaenco.blockchain.service.BlockMiner;
 import com.nbugaenco.blockchain.service.implementation.Sha256BlockMiner;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Blockchain {
@@ -23,19 +25,19 @@ public class Blockchain {
     public Blockchain(Blockchain blockchain) {
         this.chain = new ArrayList<>(blockchain.getChain());
         this.difficulty = Math.abs(blockchain.getDifficulty());
-        this.blockMiner = new Sha256BlockMiner();
+        this.blockMiner = blockchain.blockMiner;
     }
 
     public static Blockchain withDifficulty(int difficulty) {
         return new Blockchain(difficulty);
     }
 
-    public synchronized void createBlock() {
+    public synchronized void createBlock(MinerThread miner) {
         String prevHash = chain.isEmpty() ? "0" : getLastBlock().getHash();
 
         chain.add(blockMiner.mineBlock(
                 Block.create(prevHash, chain.size() + 1L),
-                difficulty));
+                difficulty, miner));
 
         difficulty = adjustDifficulty();
     }
@@ -66,8 +68,21 @@ public class Blockchain {
     }
 
     public boolean isBlockValid(Block block) {
-        return checkOwnHash(block) &&
-                checkPreviousHash(block);
+        if (!checkOwnHash(block)) {
+            throw new InvalidBlockException(String.format(
+                    "%nInvalid block hash: %s.%nShould be: %s",
+                    block.getHash(),
+                    block.calculateHash()
+            ));
+        } else if (!checkPreviousHash(block)) {
+            throw new InvalidBlockException(String.format(
+                    "%nInvalid previous block hash: %s.%nShould be: %s",
+                    block.getPreviousHash(),
+                    Optional.ofNullable(getPreviousBlock(block)).orElse(Block.create("0", -1)).getHash()
+            ));
+        }
+
+        return true;
     }
 
     private boolean checkPreviousHash(Block block) {

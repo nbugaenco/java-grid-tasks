@@ -1,13 +1,13 @@
 package com.nbugaenco.blockchain.util;
 
+import com.nbugaenco.blockchain.exception.Sha256ProcessException;
+
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-public class StringUtils {
+public class StringUtil {
 
-    private StringUtils() {
+    private StringUtil() {
         throw new IllegalStateException("Utility class");
     }
 
@@ -23,18 +23,7 @@ public class StringUtils {
             }
             return hexString.toString();
         } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static int getThreadNumber(String threadName) {
-        Pattern pattern = Pattern.compile("thread-(\\d+)");
-        Matcher matcher = pattern.matcher(threadName);
-
-        if (matcher.find()) {
-            return Integer.parseInt(matcher.group(1));
-        } else {
-            throw new IllegalArgumentException("Invalid thread name: " + threadName);
+            throw new Sha256ProcessException("SHA256 hashing failed");
         }
     }
 }

@@ -1,18 +1,25 @@
 package com.nbugaenco.blockchain.model;
 
-import com.nbugaenco.blockchain.util.StringUtils;
+import com.nbugaenco.blockchain.util.StringUtil;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.nbugaenco.blockchain.util.AnsiColors.*;
 
 public class Block {
 
     private final String previousHash;
     private final long timeStamp;
     private final long id;
+    private final List<MinerTransaction> transactions = new ArrayList<>();
     private String hash;
     private int nonce = 0;
     private long generationTime;
-    private long miner;
+    private int miner;
     private String difficultyChange;
 
     public Block(Block block) {
@@ -24,6 +31,7 @@ public class Block {
         this.generationTime = block.generationTime;
         this.miner = block.miner;
         this.difficultyChange = block.difficultyChange;
+        this.transactions.addAll(block.transactions);
     }
 
     private Block(String previousHash, long id) {
@@ -38,7 +46,7 @@ public class Block {
     }
 
     public String calculateHash() {
-        return StringUtils.applySha256(this.previousHash + this.id + this.timeStamp + this.nonce);
+        return StringUtil.applySha256(this.previousHash + this.id + this.timeStamp + this.nonce);
     }
 
     public String getHash() {
@@ -61,10 +69,6 @@ public class Block {
         this.difficultyChange = difficultyChange;
     }
 
-    public void setMiner(long miner) {
-        this.miner = miner;
-    }
-
     public long calculateGenerationTime() {
         return Instant.now().getEpochSecond() - timeStamp;
     }
@@ -77,16 +81,72 @@ public class Block {
         this.generationTime = generationTime;
     }
 
+    public List<MinerTransaction> getTransactions() {
+        return Collections.unmodifiableList(transactions);
+    }
+
+    public int getMiner() {
+        return miner;
+    }
+
+    public void setMiner(int miner) {
+        this.miner = miner;
+    }
+
+    public void addTransaction(MinerTransaction transaction) {
+        transactions.add(transaction);
+    }
+
+    private String getBlockMessages() {
+        if (transactions.isEmpty()) {
+            return "no transactions";
+        }
+        return transactions.stream().map(MinerTransaction::toString).collect(Collectors.joining("\n"));
+    }
+
     @Override
     public String toString() {
-        return "\nBlock:" +
+        return BOLD +
+                "\nBlock:" +
+                RESET +
+                UNDERLINE +
                 "\nCreated by miner # " + this.miner +
-                "\nId: " + this.id +
-                "\nTimestamp: " + this.timeStamp +
-                "\nMagic number: " + this.nonce +
-                "\nHash of the previous block:\n" + this.previousHash +
-                "\nHash of the block:\n" + this.hash +
-                "\nBlock was generating for " + this.generationTime + " seconds" +
-                "\n" + this.difficultyChange;
+                RESET +
+                "\nMiner " + this.miner + " gets "
+                + YELLOW + BOLD +
+                "100 VC" +
+                RESET + BLUE + ITALIC +
+                "\nId: " +
+                RESET +
+                this.id +
+                BLUE + ITALIC +
+                "\nTimestamp: " +
+                RESET +
+                this.timeStamp +
+                MAGENTA + ITALIC +
+                "\nMagic number: " +
+                RESET +
+                this.nonce +
+                RED + BOLD + ITALIC +
+                "\nHash of the previous block:\n" +
+                RESET +
+                this.previousHash +
+                GREEN + BOLD + ITALIC +
+                "\nHash of the block:\n" +
+                RESET +
+                this.hash +
+                BOLD + UNDERLINE +
+                "\nBlock data:\n" +
+                RESET +
+                getBlockMessages() +
+                CYAN + ITALIC +
+                "\nBlock was generating for " +
+                RESET + BOLD +
+                this.generationTime +
+                RESET + CYAN +
+                " seconds" +
+                RESET + ITALIC +
+                "\n" + this.difficultyChange +
+                RESET;
     }
 }
