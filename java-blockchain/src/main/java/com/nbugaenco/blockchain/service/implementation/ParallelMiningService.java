@@ -15,14 +15,28 @@ import java.util.concurrent.Executors;
 
 import static com.nbugaenco.blockchain.util.AnsiColors.*;
 
+/**
+ * An implementation of the MiningService that mines blocks in parallel threads.
+ *
+ * @author nbugaenco
+ */
 public class ParallelMiningService implements MiningService {
 
     private final List<MinerThread> miners;
 
+    /**
+     * Constructs a ParallelMiningService with an empty list of miners.
+     */
     public ParallelMiningService() {
         this.miners = new ArrayList<>();
     }
 
+    /**
+     * Updates the difficulty change information in the last block of the blockchain.
+     *
+     * @param blockchain    the blockchain containing the block to update
+     * @param oldDifficulty the previous difficulty value
+     */
     private void makeLastBlockDifficultyChange(final Blockchain blockchain, final int oldDifficulty) {
         Block lastBlock = blockchain.getLastBlock();
 
@@ -35,6 +49,13 @@ public class ParallelMiningService implements MiningService {
         }
     }
 
+    /**
+     * Fills the list of callable tasks with miners, creating them if necessary.
+     *
+     * @param callable   the list of callable tasks to fill
+     * @param blockchain the blockchain to be mined
+     * @return a list of callable tasks filled with miners
+     */
     private List<Callable<Blockchain>> fillCallableTasks(final List<Callable<Blockchain>> callable, final Blockchain blockchain) {
         List<Callable<Blockchain>> tmp = new ArrayList<>(callable);
 
@@ -52,13 +73,16 @@ public class ParallelMiningService implements MiningService {
         return tmp;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Blockchain mineBlocks(final Blockchain givenChain, final int n) {
+    public Blockchain mineBlocks(final Blockchain givenChain, final int count) {
         Blockchain blockchain = new Blockchain(givenChain);
         ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         List<Callable<Blockchain>> callableTasks = new ArrayList<>();
 
-        for (int i = 0; i < n; ++i) {
+        for (int i = 0; i < count; ++i) {
             callableTasks = fillCallableTasks(callableTasks, blockchain);
 
             int oldDifficulty = blockchain.getDifficulty();
@@ -81,12 +105,22 @@ public class ParallelMiningService implements MiningService {
         return blockchain;
     }
 
+    /**
+     * Performs all transactions in the given block.
+     *
+     * @param block the block containing the transactions to perform
+     */
     private void performAllTransactionsInBlock(Block block) {
         for (MinerTransaction transaction : block.getTransactions()) {
             transaction.perfomTransaction(miners);
         }
     }
 
+    /**
+     * Adds 100 virtual coins to the miner who mined the last block in the given blockchain.
+     *
+     * @param blockchain the blockchain containing the last block
+     */
     private void add100ToWinMiner(Blockchain blockchain) {
         int winMiner = blockchain.getLastBlock().getMiner();
         miners.stream()
@@ -94,6 +128,9 @@ public class ParallelMiningService implements MiningService {
                 .findFirst().ifPresent(MinerThread::add100);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getMinersBalance() {
         StringBuilder sb = new StringBuilder();

@@ -1,5 +1,11 @@
 package com.nbugaenco.blockchain.util;
 
+/**
+ * Enum representing various ANSI color codes and formatting options.
+ * These can be used to style text output in the terminal.
+ *
+ * @author nbugaenco
+ */
 public enum AnsiColors {
     RESET("\u001B[0m"),
 
@@ -18,10 +24,20 @@ public enum AnsiColors {
 
     final String value;
 
+    /**
+     * Constructs an AnsiColors instance with the given ANSI code.
+     *
+     * @param value the ANSI code representing the color or formatting option
+     */
     AnsiColors(String value) {
         this.value = value;
     }
 
+    /**
+     * Returns the ANSI code of this AnsiColors instance as a string.
+     *
+     * @return the ANSI code as a string
+     */
     @Override
     public String toString() {
         return value;

@@ -10,6 +10,13 @@ import java.util.stream.Collectors;
 
 import static com.nbugaenco.blockchain.util.AnsiColors.*;
 
+/**
+ * Represents a block in the blockchain, containing a list of transactions, a previous block's hash,
+ * a timestamp, a unique ID, and other properties related to mining. Provides methods for
+ * calculating the block's hash, adding transactions, and generating a string representation of the block.
+ *
+ * @author nbugaenco
+ */
 public class Block {
 
     private final String previousHash;
@@ -22,6 +29,11 @@ public class Block {
     private int miner;
     private String difficultyChange;
 
+    /**
+     * Constructs a new Block instance by copying the contents and properties of another Block instance.
+     *
+     * @param block the Block instance to copy from
+     */
     public Block(Block block) {
         this.previousHash = block.previousHash;
         this.id = block.id;
@@ -34,6 +46,13 @@ public class Block {
         this.transactions.addAll(block.transactions);
     }
 
+    /**
+     * Constructs a new Block instance with the specified previous hash and unique ID.
+     * The constructor is private to enforce the use of the {@link #create(String, long)} factory method.
+     *
+     * @param previousHash the hash of the previous block
+     * @param id           the unique ID of the block
+     */
     private Block(String previousHash, long id) {
         this.previousHash = previousHash;
         this.id = id;
@@ -41,10 +60,22 @@ public class Block {
         this.hash = calculateHash();
     }
 
+    /**
+     * Creates a new Block instance with the specified previous hash and unique ID.
+     *
+     * @param previousHash the hash of the previous block
+     * @param id           the unique ID of the block
+     * @return a new Block instance with the specified previous hash and unique ID
+     */
     public static Block create(String previousHash, long id) {
         return new Block(previousHash, id);
     }
 
+    /**
+     * Calculates the hash of the block using its content.
+     *
+     * @return the calculated hash of the block
+     */
     public String calculateHash() {
         return StringUtil.applySha256(this.previousHash + this.id + this.timeStamp + this.nonce);
     }
@@ -93,6 +124,11 @@ public class Block {
         this.miner = miner;
     }
 
+    /**
+     * Adds a MinerTransaction to the block.
+     *
+     * @param transaction the {@link MinerTransaction} to add
+     */
     public void addTransaction(MinerTransaction transaction) {
         transactions.add(transaction);
     }
@@ -104,6 +140,11 @@ public class Block {
         return transactions.stream().map(MinerTransaction::toString).collect(Collectors.joining("\n"));
     }
 
+    /**
+     * Returns a string representation of the block, showing its properties and the contents of its transactions.
+     *
+     * @return a string representation of the block
+     */
     @Override
     public String toString() {
         return BOLD +

@@ -5,12 +5,27 @@ import com.nbugaenco.blockchain.exception.Sha256ProcessException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 
+/**
+ * Utility class containing methods for working with strings and cryptographic operations.
+ *
+ * @author nbugaenco
+ */
 public class StringUtil {
 
+    /**
+     * Private constructor to prevent instantiation of this utility class.
+     */
     private StringUtil() {
         throw new IllegalStateException("Utility class");
     }
 
+    /**
+     * Applies the SHA-256 hash function to the input string.
+     *
+     * @param input the string to hash
+     * @return the SHA-256 hashed string
+     * @throws Sha256ProcessException if the hashing process fails
+     */
     public static String applySha256(String input) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
