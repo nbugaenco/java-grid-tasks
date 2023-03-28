@@ -79,6 +79,7 @@ public class ParallelMiningService implements MiningService {
     @Override
     public Blockchain mineBlocks(final Blockchain givenChain, final int count) {
         Blockchain blockchain = new Blockchain(givenChain);
+
         ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         List<Callable<Blockchain>> callableTasks = new ArrayList<>();
 
@@ -94,9 +95,9 @@ public class ParallelMiningService implements MiningService {
                 makeLastBlockDifficultyChange(blockchain, oldDifficulty);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
-                System.err.println("Thread interrupted");
+                System.err.println("Thread interrupted\n" + e.getMessage());
             } catch (ExecutionException e) {
-                System.err.println("Thread error");
+                System.err.println("Thread error\n" + e.getMessage());
             }
 
         }
