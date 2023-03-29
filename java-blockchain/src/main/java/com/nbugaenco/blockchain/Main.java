@@ -3,9 +3,12 @@ package com.nbugaenco.blockchain;
 import com.nbugaenco.blockchain.model.Blockchain;
 import com.nbugaenco.blockchain.service.MiningService;
 import com.nbugaenco.blockchain.service.implementation.ParallelMiningService;
-import com.nbugaenco.blockchain.util.AnsiColors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Main {
+
+    private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
     /**
      * The main method demonstrates the mining of blocks in a blockchain
@@ -19,10 +22,10 @@ public class Main {
         MiningService miningService = new ParallelMiningService();
 
         // Display the mining start message
-        System.out.println(AnsiColors.ITALIC + "Started mining...");
+        logger.info("Starting mining...\n");
 
         // Mine 7 blocks with the given mining service
-        Blockchain blockchain = miningService.mineBlocks(Blockchain.withDifficulty(0), 7);
+        Blockchain blockchain = miningService.mineBlocks(Blockchain.withDifficulty(0), 10);
 
         // Check if the blockchain is valid and display the result
         System.out.println(blockchain.isBlockchainValid() ? blockchain : "Invalid blockchain!");

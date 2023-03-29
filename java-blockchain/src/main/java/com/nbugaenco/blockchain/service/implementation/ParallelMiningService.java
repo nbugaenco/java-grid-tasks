@@ -5,6 +5,8 @@ import com.nbugaenco.blockchain.model.Blockchain;
 import com.nbugaenco.blockchain.model.MinerThread;
 import com.nbugaenco.blockchain.model.MinerTransaction;
 import com.nbugaenco.blockchain.service.MiningService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +23,9 @@ import static com.nbugaenco.blockchain.util.AnsiColors.*;
  * @author nbugaenco
  */
 public class ParallelMiningService implements MiningService {
+
+    private static final Logger logger = LoggerFactory.getLogger(ParallelMiningService.class);
+
 
     private final List<MinerThread> miners;
 
@@ -56,7 +61,7 @@ public class ParallelMiningService implements MiningService {
      * @param blockchain the blockchain to be mined
      * @return a list of callable tasks filled with miners
      */
-    private List<Callable<Blockchain>> fillCallableTasks(final List<Callable<Blockchain>> callable, final Blockchain blockchain) {
+    private synchronized List<Callable<Blockchain>> fillCallableTasks(final List<Callable<Blockchain>> callable, final Blockchain blockchain) {
         List<Callable<Blockchain>> tmp = new ArrayList<>(callable);
 
         if (miners.isEmpty()) {
@@ -93,6 +98,7 @@ public class ParallelMiningService implements MiningService {
                 add100ToWinMiner(blockchain);
                 performAllTransactionsInBlock(blockchain.getLastBlock());
                 makeLastBlockDifficultyChange(blockchain, oldDifficulty);
+                logger.info("Thread {} mined block", blockchain.getLastBlock().getMiner());
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 System.err.println("Thread interrupted\n" + e.getMessage());

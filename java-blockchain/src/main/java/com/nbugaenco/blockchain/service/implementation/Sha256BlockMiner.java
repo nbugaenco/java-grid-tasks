@@ -47,7 +47,9 @@ public class Sha256BlockMiner implements BlockMiner {
             toMiner = ThreadLocalRandom.current().nextInt(1, minersCount + 1);
         }
 
-        int amount = ThreadLocalRandom.current().nextInt(1, preCheckBalance(miner));
+        int preBalance = preCheckBalance(miner);
+        int amount = preBalance <= 1 ? 1 : ThreadLocalRandom.current().nextInt(1, preBalance);
+
         return new MinerTransaction(
                 miner.getId(),
                 toMiner,
@@ -93,10 +95,7 @@ public class Sha256BlockMiner implements BlockMiner {
             int nonce = ThreadLocalRandom.current().nextInt(Integer.MAX_VALUE);
             block.setNonce(nonce);
             block.setHash(block.calculateHash());
-
-            if (preCheckBalance(miner) != 0 && threadTransactions.size() < 5 && chance10Percent()) {
-                threadTransactions.add(createRandomTransaction(miner));
-            }
+            tryCreateTransaction(miner);
         }
 
         block.setGenerationTime(block.calculateGenerationTime());
@@ -113,6 +112,12 @@ public class Sha256BlockMiner implements BlockMiner {
         }
 
         return block;
+    }
+
+    private void tryCreateTransaction(MinerThread miner) {
+        if (preCheckBalance(miner) > 0 && threadTransactions.size() < 5 && chance10Percent()) {
+            threadTransactions.add(createRandomTransaction(miner));
+        }
     }
 
     /**
