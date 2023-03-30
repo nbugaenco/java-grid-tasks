@@ -1,4 +1,9 @@
-package com.nbugaenco.encryptdecrypt;
+package com.nbugaenco.encryptdecrypt.service;
+
+import com.nbugaenco.encryptdecrypt.model.Encoder;
+import com.nbugaenco.encryptdecrypt.model.ShiftEncoder;
+import com.nbugaenco.encryptdecrypt.model.UnicodeEncoder;
+import com.nbugaenco.encryptdecrypt.util.Parameter;
 
 /**
  * This factory creates {@link Encoder} based on {@link Parameter#ALG}
@@ -13,7 +18,7 @@ public class EncoderFactory {
             case "unicode" -> {
                 return new UnicodeEncoder();
             }
-            default -> throw new IllegalArgumentException("Wrong algorithm: " + "\"" + alg + "\"");
+            default -> throw new IllegalStateException("Wrong algorithm: " + "\"" + alg + "\"");
         }
     }
 }

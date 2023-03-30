@@ -1,5 +1,10 @@
 package com.nbugaenco.encryptdecrypt;
 
+import com.nbugaenco.encryptdecrypt.model.Encoder;
+import com.nbugaenco.encryptdecrypt.service.EncoderFactory;
+import com.nbugaenco.encryptdecrypt.util.EncoderUtils;
+import com.nbugaenco.encryptdecrypt.util.Parameter;
+
 import java.util.Map;
 
 public class Main {

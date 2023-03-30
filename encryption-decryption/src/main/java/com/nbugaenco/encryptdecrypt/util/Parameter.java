@@ -1,4 +1,7 @@
-package com.nbugaenco.encryptdecrypt;
+package com.nbugaenco.encryptdecrypt.util;
+
+import com.nbugaenco.encryptdecrypt.model.ShiftEncoder;
+import com.nbugaenco.encryptdecrypt.model.UnicodeEncoder;
 
 import java.util.Arrays;
 

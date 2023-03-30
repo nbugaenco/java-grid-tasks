@@ -1,4 +1,4 @@
-package com.nbugaenco.encryptdecrypt;
+package com.nbugaenco.encryptdecrypt.model;
 
 /**
  * This {@link Encoder} uses unicode method.
@@ -8,6 +8,7 @@ package com.nbugaenco.encryptdecrypt;
 public class UnicodeEncoder extends Encoder {
 
     public UnicodeEncoder() {
+        super();
     }
 
     @Override
