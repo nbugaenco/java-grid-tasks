@@ -101,12 +101,15 @@ public class Sha256BlockMiner implements BlockMiner {
         block.setGenerationTime(block.calculateGenerationTime());
         block.setMiner(miner.getId());
 
-        while (!threadTransactions.isEmpty()) {
-            if (chance10Percent()) {
-                threadTransactions.clear();
-                break;
+
+        synchronized (threadTransactions) {
+            while (!threadTransactions.isEmpty()) {
+                if (chance10Percent()) {
+                    threadTransactions.clear();
+                    break;
+                }
+                block.addTransaction(threadTransactions.poll());
             }
-            block.addTransaction(threadTransactions.poll());
         }
 
         return block;
