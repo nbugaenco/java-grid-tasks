@@ -30,9 +30,8 @@ public class Main {
         // Check if the blockchain is valid and display the result
         if (blockchain.isBlockchainValid()) {
             logger.info("Blockchain mined:{}\n", blockchain);
-            logger.info("Miners balances\n{}",miningService.getMinersBalance());
-        }
-        else {
+            logger.info("Miners balances{}", miningService.getMinersBalance());
+        } else {
             logger.error("Blockchain is not valid");
         }
     }

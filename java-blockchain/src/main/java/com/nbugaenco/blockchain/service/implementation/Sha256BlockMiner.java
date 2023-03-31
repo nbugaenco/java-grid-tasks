@@ -94,21 +94,19 @@ public class Sha256BlockMiner implements BlockMiner {
                 !Thread.currentThread().isInterrupted()) {
             int nonce = ThreadLocalRandom.current().nextInt(Integer.MAX_VALUE);
             block.setNonce(nonce);
-            block.setHash(block.calculateHash());
+            block.calculateAndUpdateHash();
             tryCreateTransaction(miner);
         }
 
         block.setGenerationTime(block.calculateGenerationTime());
         block.setMiner(miner.getId());
 
-        synchronized (threadTransactions) {
-            while (!threadTransactions.isEmpty()) {
-                if (chance10Percent()) {
-                    threadTransactions.clear();
-                    break;
-                }
-                block.addTransaction(threadTransactions.poll());
+        while (!threadTransactions.isEmpty()) {
+            if (chance10Percent()) {
+                threadTransactions.clear();
+                break;
             }
+            block.addTransaction(threadTransactions.poll());
         }
 
         return block;
@@ -125,7 +123,7 @@ public class Sha256BlockMiner implements BlockMiner {
      *
      * @return true if a random number is within the 10% range, false otherwise
      */
-    private synchronized boolean chance10Percent() {
+    private boolean chance10Percent() {
         return ThreadLocalRandom.current().nextDouble() < 0.1;
     }
 }

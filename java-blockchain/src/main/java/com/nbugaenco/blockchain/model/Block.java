@@ -80,12 +80,12 @@ public class Block {
         return StringUtil.applySha256(this.previousHash + this.id + this.timeStamp + this.nonce);
     }
 
-    public String getHash() {
-        return hash;
+    public void calculateAndUpdateHash() {
+        this.hash = calculateHash();
     }
 
-    public void setHash(String hash) {
-        this.hash = hash;
+    public String getHash() {
+        return hash;
     }
 
     public String getPreviousHash() {

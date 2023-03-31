@@ -86,6 +86,7 @@ public class MinerThread implements Callable<Blockchain> {
             logger.warn("Thread {} parked for some reason", this.id);
         }
         blockchain.createBlock(this);
+
         return blockchain;
     }
 }

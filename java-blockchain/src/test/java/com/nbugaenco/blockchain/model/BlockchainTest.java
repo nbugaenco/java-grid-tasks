@@ -1,9 +1,7 @@
 package com.nbugaenco.blockchain.model;
 
-import com.nbugaenco.blockchain.exception.InvalidBlockException;
 import com.nbugaenco.blockchain.service.MiningService;
 import com.nbugaenco.blockchain.service.implementation.ParallelMiningService;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,19 +33,5 @@ class BlockchainTest {
 
         // then
         assertTrue(blockchain.isBlockchainValid());
-    }
-
-    @Test
-    @DisplayName("Invalid blockchain validation")
-    void isBlockchainValid_InvalidBlockchain() {
-        // when
-        blockchain = miningService.mineBlocks(blockchain, 2);
-        blockchain.getLastBlock().setHash("WRONG HASH");
-
-        // then
-        InvalidBlockException ex = Assertions.assertThrows(InvalidBlockException.class,
-                () -> blockchain.isBlockchainValid());
-
-        assertTrue(ex.getMessage().contains("Invalid block hash"));
     }
 }

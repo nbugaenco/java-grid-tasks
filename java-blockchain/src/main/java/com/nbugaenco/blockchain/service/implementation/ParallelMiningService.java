@@ -98,7 +98,11 @@ public class ParallelMiningService implements MiningService {
                 add100ToWinMiner(blockchain);
                 performAllTransactionsInBlock(blockchain.getLastBlock());
                 makeLastBlockDifficultyChange(blockchain, oldDifficulty);
-                logger.info("Thread {} mined block", blockchain.getLastBlock().getMiner());
+                logger.info(
+                        "Miner {} mined block №{}",
+                        blockchain.getLastBlock().getMiner(),
+                        blockchain.getChain().size()
+                );
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 System.err.println("Thread interrupted\n" + e.getMessage());
