@@ -25,12 +25,15 @@ public class Main {
         logger.info("Starting mining...\n");
 
         // Mine 7 blocks with the given mining service
-        Blockchain blockchain = miningService.mineBlocks(Blockchain.withDifficulty(0), 10);
+        Blockchain blockchain = miningService.mineBlocks(Blockchain.withDifficulty(0), 7);
 
         // Check if the blockchain is valid and display the result
-        System.out.println(blockchain.isBlockchainValid() ? blockchain : "Invalid blockchain!");
-
-        // Display the miners' balances
-        System.out.println(miningService.getMinersBalance());
+        if (blockchain.isBlockchainValid()) {
+            logger.info("Blockchain mined:{}\n", blockchain);
+            logger.info("Miners balances\n{}",miningService.getMinersBalance());
+        }
+        else {
+            logger.error("Blockchain is not valid");
+        }
     }
 }
