@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>
+                %highlight(%-5level) %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %cyan(%logger{36}) - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>java-blockchain/logs/blockchain.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>
+                %-5level %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %logger{36} - %msg%n
+            </pattern>
+        </encoder>
+        <immediateFlush>true</immediateFlush>
+    </appender>
+
+
+    <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="STDOUT"/>
+        <queueSize>1024</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+    </appender>
+
+    <logger name="com.nbugaenco.blockchain" level="DEBUG" additivity="false">
+        <appender-ref ref="ASYNC"/>
+        <appender-ref ref="FILE"/>
+    </logger>
+
+    <root level="INFO">
+        <appender-ref ref="ASYNC"/>
+        <appender-ref ref="FILE"/>
+    </root>
+
+    <conversionRule conversionWord="highlight"
+                    converterClass="ch.qos.logback.classic.pattern.color.HighlightingCompositeConverter">
+        <converter>
+            <name>boldRed</name>
+            <class>ch.qos.logback.classic.pattern.color.BoldRedCompositeConverter</class>
+        </converter>
+        <converter>
+            <name>boldGreen</name>
+            <class>ch.qos.logback.classic.pattern.color.BoldGreenCompositeConverter</class>
+        </converter>
+        <converter>
+            <name>boldBlue</name>
+            <class>ch.qos.logback.classic.pattern.color.BoldBlueCompositeConverter</class>
+        </converter>
+        <converter>
+            <name>cyan</name>
+            <class>ch.qos.logback.classic.pattern.color.CyanCompositeConverter</class>
+        </converter>
+    </conversionRule>
+</configuration>
