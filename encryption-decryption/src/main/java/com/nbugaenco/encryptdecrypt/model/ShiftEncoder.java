@@ -1,4 +1,4 @@
-package com.nbugaenco.encryptdecrypt;
+package com.nbugaenco.encryptdecrypt.model;
 
 /**
  * This {@link Encoder} uses shift method.
@@ -8,6 +8,7 @@ package com.nbugaenco.encryptdecrypt;
 public class ShiftEncoder extends Encoder {
 
     public ShiftEncoder() {
+        super();
     }
 
     private Integer encodeChar(Integer c) {
