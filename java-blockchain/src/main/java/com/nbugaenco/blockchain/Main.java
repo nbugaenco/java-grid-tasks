@@ -25,7 +25,7 @@ public class Main {
         logger.info("Starting mining...\n");
 
         // Mine 7 blocks with the given mining service
-        Blockchain blockchain = miningService.mineBlocks(Blockchain.withDifficulty(0), 7);
+        Blockchain blockchain = miningService.mineBlocks(Blockchain.withDifficulty(0), 8);
 
         // Check if the blockchain is valid and display the result
         if (blockchain.isBlockchainValid()) {

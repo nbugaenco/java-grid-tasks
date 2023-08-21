@@ -21,6 +21,44 @@ public class Sha256BlockMiner implements BlockMiner {
     private static final ConcurrentLinkedQueue<MinerTransaction> threadTransactions = new ConcurrentLinkedQueue<>();
 
     /**
+     * Mines a block using the SHA-256 hashing algorithm, satisfying the given difficulty.
+     * Random transactions are created and added to the block during the mining process.
+     *
+     * @param givenBlock the block to be mined
+     * @param difficulty the difficulty level of mining
+     * @param miner      the miner who mines the block
+     * @return the mined block
+     */
+    @Override
+    public Block mineBlock(final Block givenBlock, final int difficulty, MinerThread miner) {
+        Block block = new Block(givenBlock);
+
+        while (!satisfyDifficulty(difficulty, block) &&
+               !Thread.currentThread().isInterrupted()) {
+            int nonce = ThreadLocalRandom.current().nextInt(Integer.MAX_VALUE);
+            block.setNonce(nonce);
+            block.calculateAndUpdateHash();
+            tryCreateTransaction(miner);
+        }
+
+        block.setGenerationTime(block.calculateGenerationTime());
+        block.setMiner(miner.getId());
+
+
+        synchronized (threadTransactions) {
+            while (!threadTransactions.isEmpty()) {
+                if (chance10Percent()) {
+                    threadTransactions.clear();
+                    break;
+                }
+                block.addTransaction(threadTransactions.poll());
+            }
+        }
+
+        return block;
+    }
+
+    /**
      * Checks if the block's hash satisfies the given difficulty by comparing the hash prefix
      * with the target string.
      *
@@ -33,6 +71,12 @@ public class Sha256BlockMiner implements BlockMiner {
         return block.getHash().substring(0, difficulty).equals(target);
     }
 
+    private void tryCreateTransaction(MinerThread miner) {
+        if (preCheckBalance(miner) > 0 && threadTransactions.size() < 5 && chance10Percent()) {
+            threadTransactions.add(createRandomTransaction(miner));
+        }
+    }
+
     /**
      * Creates a random transaction from the given miner to another miner.
      *
@@ -41,11 +85,11 @@ public class Sha256BlockMiner implements BlockMiner {
      */
     private static MinerTransaction createRandomTransaction(MinerThread miner) {
         int minersCount = Runtime.getRuntime().availableProcessors();
-        int toMiner = miner.getId();
+        int toMiner;
 
-        while (toMiner == miner.getId()) {
+        do {
             toMiner = ThreadLocalRandom.current().nextInt(1, minersCount + 1);
-        }
+        } while (toMiner == miner.getId());
 
         int preBalance = preCheckBalance(miner);
         int amount = preBalance <= 1 ? 1 : ThreadLocalRandom.current().nextInt(1, preBalance);
@@ -75,50 +119,6 @@ public class Sha256BlockMiner implements BlockMiner {
         }
 
         return maxAvailBalance;
-    }
-
-    /**
-     * Mines a block using the SHA-256 hashing algorithm, satisfying the given difficulty.
-     * Random transactions are created and added to the block during the mining process.
-     *
-     * @param givenBlock the block to be mined
-     * @param difficulty the difficulty level of mining
-     * @param miner      the miner who mines the block
-     * @return the mined block
-     */
-    @Override
-    public Block mineBlock(final Block givenBlock, final int difficulty, MinerThread miner) {
-        Block block = new Block(givenBlock);
-
-        while (!satisfyDifficulty(difficulty, block) &&
-                !Thread.currentThread().isInterrupted()) {
-            int nonce = ThreadLocalRandom.current().nextInt(Integer.MAX_VALUE);
-            block.setNonce(nonce);
-            block.calculateAndUpdateHash();
-            tryCreateTransaction(miner);
-        }
-
-        block.setGenerationTime(block.calculateGenerationTime());
-        block.setMiner(miner.getId());
-
-
-        synchronized (threadTransactions) {
-            while (!threadTransactions.isEmpty()) {
-                if (chance10Percent()) {
-                    threadTransactions.clear();
-                    break;
-                }
-                block.addTransaction(threadTransactions.poll());
-            }
-        }
-
-        return block;
-    }
-
-    private void tryCreateTransaction(MinerThread miner) {
-        if (preCheckBalance(miner) > 0 && threadTransactions.size() < 5 && chance10Percent()) {
-            threadTransactions.add(createRandomTransaction(miner));
-        }
     }
 
     /**

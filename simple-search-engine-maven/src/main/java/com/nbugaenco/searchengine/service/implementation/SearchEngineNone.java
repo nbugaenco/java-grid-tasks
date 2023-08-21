@@ -6,6 +6,7 @@ import com.nbugaenco.searchengine.service.SearchEngine;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.IntStream;
 
 /**
  * Implementation of {@link SearchEngine} that searches lines that do NOT contain any words from search query
@@ -22,9 +23,7 @@ public class SearchEngineNone extends SearchEngine {
         Set<Integer> indexes = new HashSet<>(dataset.getLines().size());
 
         // Adding all line's indexes
-        for (int i = 0; i < dataset.getLines().size(); ++i) {
-            indexes.add(i);
-        }
+        IntStream.range(0, dataset.getLines().size()).forEach(indexes::add);
 
         // Making set of indexes that contain words from search query
         Set<Integer> querySet = new HashSet<>();

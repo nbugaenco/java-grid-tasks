@@ -10,6 +10,7 @@ import java.util.Set;
  * Basic abstract class for SearcEngine strategies
  */
 public abstract class SearchEngine {
+
     protected final SearchDataset dataset;
 
     protected SearchEngine(SearchDataset dataset) {

@@ -39,7 +39,8 @@ class EncoderFactoryTest {
     @Test
     void createInvalidEncoder() {
         // when
-        IllegalStateException ex = assertThrows(IllegalStateException.class, () -> encoderFactory.create("invalid"));
+        IllegalArgumentException ex =
+            assertThrows(IllegalArgumentException.class, () -> encoderFactory.create("invalid"));
 
         // then
         assertTrue(ex.getMessage().contains("Wrong algorithm"));

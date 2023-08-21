@@ -14,7 +14,11 @@ import java.util.Set;
  */
 @Getter
 public class SearchEngineContext {
+
+    public static final String INVALID_SEARCH_STRATEGY = "Invalid search strategy";
+
     private final SearchDataset dataset;
+
     private SearchEngine searchMethod;
 
     public SearchEngineContext(SearchDataset dataset) {
@@ -33,7 +37,7 @@ public class SearchEngineContext {
         } else if (strategy == SearchStrategy.NONE) {
             this.searchMethod = new SearchEngineNone(dataset);
         } else {
-            throw new IllegalArgumentException("Invalid search strategy");
+            throw new IllegalArgumentException(INVALID_SEARCH_STRATEGY);
         }
     }
 
@@ -43,7 +47,7 @@ public class SearchEngineContext {
                 case ALL -> this.searchMethod = new SearchEngineAll(dataset);
                 case ANY -> this.searchMethod = new SearchEngineAny(dataset);
                 case NONE -> this.searchMethod = new SearchEngineNone(dataset);
-                default -> throw new IllegalArgumentException("Invalid search strategy");
+                default -> throw new IllegalArgumentException(INVALID_SEARCH_STRATEGY);
             }
         } else {
             if (strategy == SearchStrategy.ALL && !(searchMethod instanceof SearchEngineAll)) {
@@ -53,7 +57,7 @@ public class SearchEngineContext {
             } else if (strategy == SearchStrategy.NONE && !(searchMethod instanceof SearchEngineNone)) {
                 this.searchMethod = new SearchEngineNone(dataset);
             } else {
-                throw new IllegalArgumentException("Invalid search strategy");
+                throw new IllegalArgumentException(INVALID_SEARCH_STRATEGY);
             }
         }
     }

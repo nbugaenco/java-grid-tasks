@@ -33,6 +33,22 @@ public class MinerThread implements Callable<Blockchain> {
         this.id = id;
     }
 
+    /**
+     * Creates a new block in the associated blockchain and returns the updated blockchain.
+     * This method is called when the miner thread is executed by a thread executor.
+     *
+     * @return the updated blockchain with the new block created by this miner thread
+     */
+    @Override
+    public Blockchain call() {
+        if (Thread.currentThread().getState() == Thread.State.WAITING) {
+            logger.warn("Thread {} parked for some reason", this.id);
+        }
+        blockchain.createBlock(this);
+
+        return blockchain;
+    }
+
     public Blockchain getBlockchain() {
         return blockchain;
     }
@@ -72,21 +88,5 @@ public class MinerThread implements Callable<Blockchain> {
 
     public Integer getId() {
         return id;
-    }
-
-    /**
-     * Creates a new block in the associated blockchain and returns the updated blockchain.
-     * This method is called when the miner thread is executed by a thread executor.
-     *
-     * @return the updated blockchain with the new block created by this miner thread
-     */
-    @Override
-    public Blockchain call() {
-        if (Thread.currentThread().getState() == Thread.State.WAITING) {
-            logger.warn("Thread {} parked for some reason", this.id);
-        }
-        blockchain.createBlock(this);
-
-        return blockchain;
     }
 }

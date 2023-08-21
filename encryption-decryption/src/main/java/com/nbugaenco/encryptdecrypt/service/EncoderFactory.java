@@ -18,7 +18,7 @@ public class EncoderFactory {
             case "unicode" -> {
                 return new UnicodeEncoder();
             }
-            default -> throw new IllegalStateException("Wrong algorithm: " + "\"" + alg + "\"");
+            default -> throw new IllegalArgumentException("Wrong algorithm: " + "\"" + alg + "\"");
         }
     }
 }

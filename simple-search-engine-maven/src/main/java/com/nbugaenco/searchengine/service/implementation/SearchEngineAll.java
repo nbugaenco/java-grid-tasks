@@ -3,6 +3,7 @@ package com.nbugaenco.searchengine.service.implementation;
 import com.nbugaenco.searchengine.model.SearchDataset;
 import com.nbugaenco.searchengine.service.SearchEngine;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,7 +25,7 @@ public class SearchEngineAll extends SearchEngine {
                 .toList();
 
         if (queryIndexes.isEmpty() || queryIndexes.get(0) == null) {
-            return Set.of();
+            return Collections.emptySet();
         }
 
         Set<Integer> indexes = new HashSet<>(queryIndexes.get(0));

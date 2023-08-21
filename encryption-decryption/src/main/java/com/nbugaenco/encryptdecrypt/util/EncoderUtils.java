@@ -50,43 +50,10 @@ public class EncoderUtils {
         encoder.setPrompt(readPromptFromArgs(params));
 
         // File output is preferred over a console one, so it goes first
-        if (params.get(OUT) != null && params.get(OUT).length() > 0) {
+        if (params.get(OUT) != null && !params.get(OUT).isEmpty()) {
             outputToFile(params, encoder);
         } else {
             outputToConsole(params, encoder);
-        }
-    }
-
-    /**
-     * Outputs encoder result to console
-     *
-     * @param params  CLI arguments
-     * @param encoder encoder to encrypt/decrypt
-     */
-    private static void outputToConsole(Map<Parameter, String> params, Encoder encoder) {
-        // Based on "-mode" will be chosen encoding or decoding method
-        System.out.println(
-                (params.get(MODE).equals("enc")) ? encoder.encode() : encoder.decode()
-        );
-    }
-
-    /**
-     * Outputs encoder result to file
-     *
-     * @param params  CLI arguments
-     * @param encoder encoder to encrypt/decrypt
-     */
-    private static void outputToFile(Map<Parameter, String> params, Encoder encoder) {
-        String outPath = params.get(OUT);
-
-        try (FileWriter fileWriter = new FileWriter(outPath)) {
-            // Based on "-mode" will be chosen encoding or decoding method
-            fileWriter.write(
-                    (params.get(MODE).equals("enc")) ? encoder.encode() : encoder.decode()
-            );
-        } catch (IOException e) {
-            System.out.println("File error!");
-            System.exit(0);
         }
     }
 
@@ -99,11 +66,11 @@ public class EncoderUtils {
     public static String readPromptFromArgs(Map<Parameter, String> params) {
         // Setting prompt to manipulate
         // Data is preferred over a source file, so it goes first
-        if (params.get(DATA) != null && params.get(DATA).length() > 0) {
+        if (params.get(DATA) != null && !params.get(DATA).isEmpty()) {
             return params.get(DATA);
         }
         // If there is no data, but source path, read data from it
-        else if (params.get(IN) != null && params.get(IN).length() > 0) {
+        else if (params.get(IN) != null && !params.get(IN).isEmpty()) {
             String inPath = params.get(IN);
 
             try {
@@ -164,6 +131,39 @@ public class EncoderUtils {
         params.putIfAbsent(ALG, "shift");
 
         return params;
+    }
+
+    /**
+     * Outputs encoder result to console
+     *
+     * @param params  CLI arguments
+     * @param encoder encoder to encrypt/decrypt
+     */
+    private static void outputToConsole(Map<Parameter, String> params, Encoder encoder) {
+        // Based on "-mode" will be chosen encoding or decoding method
+        System.out.println(
+                (params.get(MODE).equals("enc")) ? encoder.encode() : encoder.decode()
+        );
+    }
+
+    /**
+     * Outputs encoder result to file
+     *
+     * @param params  CLI arguments
+     * @param encoder encoder to encrypt/decrypt
+     */
+    private static void outputToFile(Map<Parameter, String> params, Encoder encoder) {
+        String outPath = params.get(OUT);
+
+        try (FileWriter fileWriter = new FileWriter(outPath)) {
+            // Based on "-mode" will be chosen encoding or decoding method
+            fileWriter.write(
+                    (params.get(MODE).equals("enc")) ? encoder.encode() : encoder.decode()
+            );
+        } catch (IOException e) {
+            System.out.println("File error!");
+            System.exit(0);
+        }
     }
 
     private static void chooseAlg(String[] args, Map<Parameter, String> params, int i, Parameter arg) {
